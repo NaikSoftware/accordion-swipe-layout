@@ -49,10 +49,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private int[] rightIconColors;
     private int[] rightTextColors;
 
-    public void setLeftColors(int[] leftColors) {
-        this.leftColors = leftColors;
-    }
-
     private int[] leftTextColors;
     private String[] leftTexts, rightTexts;
 
@@ -362,6 +358,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         if (rightIconColorsRes != NO_ID) rightIconColors = res.getIntArray(rightIconColorsRes);
     }
 
+    public void setLeftColors(int[] leftColors) {
+        this.leftColors = leftColors;
+    }
+
     public void setLeftIcons(int[] leftIcons) {
         this.leftIcons = leftIcons;
     }
@@ -667,7 +667,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                         finishSwipeAnimated();
                     } else {
                         view.setPressed(false);
-                        if (System.currentTimeMillis() - downTime < ViewConfiguration.getTapTimeout()) {
+                        if (System.currentTimeMillis() - downTime < ViewConfiguration.getLongPressTimeout()) {
                             view.setPressed(true);
                             view.performClick();
                             view.setPressed(false);
