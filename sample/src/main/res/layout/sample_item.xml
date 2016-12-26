@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/lightGray"
-    android:orientation="horizontal">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:foreground="?attr/selectableItemBackground"
+             android:orientation="horizontal">
 
     <TextView
         android:id="@+id/recycler_item_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center"
         android:focusable="true"
-        android:text="Item #" />
+        android:gravity="center"
+        android:text="Item #"/>
 
 
 </FrameLayout>

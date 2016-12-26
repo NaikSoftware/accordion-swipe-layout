@@ -77,8 +77,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     Toast.makeText(itemView.getContext(), "Settings", Toast.LENGTH_SHORT).show();
                 } else if (index == 2) {
                     int pos = getAdapterPosition();
-                    strings.remove(pos);
-                    notifyItemRemoved(pos);
+                    if (pos != RecyclerView.NO_POSITION){
+                        strings.remove(pos);
+                        notifyItemRemoved(pos);
+                    }
                     Toast.makeText(itemView.getContext(), "Trash", Toast.LENGTH_SHORT).show();
                 }
             }

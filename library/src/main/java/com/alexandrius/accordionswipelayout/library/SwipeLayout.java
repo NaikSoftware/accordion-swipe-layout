@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import static android.R.id.background;
 import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
 
 
@@ -416,6 +418,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     float speed;
     float downRawX;
     float downX, downY;
+    boolean rippleAlreadyCancelled;
 
     private void clearAnimations() {
         mainLayout.clearAnimation();
@@ -487,6 +490,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     //Set LayoutWithout to weight rightIcons.length - 1
     private WeightAnimation expandAnim;
 
+    private void log(String message) {
+        Log.d(TAG, message);
+    }
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
@@ -499,29 +505,51 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     downTime = lastTime = System.currentTimeMillis();
                     downRawX = prevRawX = event.getRawX();
 
+                    log("DOWN downX=" + downX + " downY=" + downY + " downTime=" + downTime + " rawX=" + downRawX);
+
                     if (ViewCompat.getTranslationX(mainLayout) == 0) {
                         if (rightLinearWithoutLast != null) {
                             Utils.setViewWeight(rightLinearWithoutLast, rightViews.length - 1);
+                            log("set weight rightLinearWithoutLast to " + (rightViews.length - 1));
                         }
                         if (leftLinearWithoutFirst != null) {
                             Utils.setViewWeight(leftLinearWithoutFirst, leftViews.length - 1);
+                            log("set weight leftLinearWithoutFirst to " + (leftViews.length - 1));
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            rippleAlreadyCancelled = false;
+                            view.drawableHotspotChanged(downX, downY);
+                            view.setPressed(true);
                         }
                     }
+
+                    log("movementStarted=" + movementStarted + " isPressed()=" + isPressed() + " isExpanding()=" + isExpanding() + " longClickPerformed=" + longClickPerformed);
+
+                    if (!movementStarted && !isPressed() && !isExpanding() && !longClickPerformed) {
+
+                        log("not pressed before");
+
+                        if (!shouldPerformLongClick) {
+                            log("post long click runnable");
+                            shouldPerformLongClick = true;
+                            longClickHandler.postDelayed(longClickRunnable, ViewConfiguration.getLongPressTimeout());
+                        }
+                    }
+
+                    log("down return true");
 
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
+                    log("MOVE prevRawX=" + prevRawX + " lastTime=" + lastTime + " movementStarted=" + movementStarted);
                     if (Math.abs(prevRawX - event.getRawX()) < 20 && !movementStarted) {
-                        if (System.currentTimeMillis() - lastTime >= 50 && !isPressed() && !isExpanding() && !longClickPerformed) {
-                            view.setPressed(true);
-
-                            if (!shouldPerformLongClick) {
-                                shouldPerformLongClick = true;
-                                longClickHandler.postDelayed(longClickRunnable, ViewConfiguration.getLongPressTimeout());
-                            }
-                        }
-
                         return false;
+                    }
+
+                    if (Build.VERSION.SDK_INT >= 21 && !rippleAlreadyCancelled && view instanceof FrameLayout) {
+                        Drawable foreground = ((FrameLayout) view).getForeground();
+                        foreground.setVisible(false, false);
+                        rippleAlreadyCancelled = true;
                     }
 
                     if (isPressed()) view.setPressed(false);
@@ -531,6 +559,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     collapseOthersIfNeeded();
 
                     clearAnimations();
+
+                    log("make swipes");
 
                     directionLeft = prevRawX - event.getRawX() > 0;
                     float delta = Math.abs(prevRawX - event.getRawX());
@@ -659,23 +689,37 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     }
                     prevRawX = event.getRawX();
                     lastTime = System.currentTimeMillis();
+
+                    log("update last and return true after swipe move processing");
+
                     return true;
 
                 case MotionEvent.ACTION_UP:
-                    finishMotion(event);
+
+                    log("UP movementStarted=" + movementStarted);
+
                     if (movementStarted) {
+                        finishMotion(event);
                         finishSwipeAnimated();
                     } else {
-                        view.setPressed(false);
-                        if (System.currentTimeMillis() - downTime < ViewConfiguration.getLongPressTimeout()) {
+                        if (!longClickPerformed) {
+                            log("perform click");
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                view.drawableHotspotChanged(event.getX(), event.getY());
+                            }
                             view.setPressed(true);
                             view.performClick();
                             view.setPressed(false);
                         }
+                        finishMotion(event);
                     }
 
                     return false;
                 case MotionEvent.ACTION_CANCEL:
+
+                    log("CANCEL");
+
                     finishMotion(event);
                     if (movementStarted)
                         finishSwipeAnimated();
@@ -901,15 +945,16 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         if (parent != null && parent instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) parent;
             if (onScrollListener != null) recyclerView.removeOnScrollListener(onScrollListener);
-            if (autoHideSwipe) recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING && ViewCompat.getTranslationX(mainLayout) != 0) {
-                        setItemState(ITEM_STATE_COLLAPSED, true);
+            if (autoHideSwipe)
+                recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if (newState == RecyclerView.SCROLL_STATE_DRAGGING && ViewCompat.getTranslationX(mainLayout) != 0) {
+                            setItemState(ITEM_STATE_COLLAPSED, true);
+                        }
                     }
-                }
-            });
+                });
         } else {
             Log.e(TAG, "For autoHideSwipe parent must be a RecyclerView");
         }
