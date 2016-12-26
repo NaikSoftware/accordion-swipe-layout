@@ -490,9 +490,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     //Set LayoutWithout to weight rightIcons.length - 1
     private WeightAnimation expandAnim;
 
-    private void log(String message) {
-        Log.d(TAG, message);
-    }
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
@@ -505,16 +502,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     downTime = lastTime = System.currentTimeMillis();
                     downRawX = prevRawX = event.getRawX();
 
-                    log("DOWN downX=" + downX + " downY=" + downY + " downTime=" + downTime + " rawX=" + downRawX);
-
                     if (ViewCompat.getTranslationX(mainLayout) == 0) {
                         if (rightLinearWithoutLast != null) {
                             Utils.setViewWeight(rightLinearWithoutLast, rightViews.length - 1);
-                            log("set weight rightLinearWithoutLast to " + (rightViews.length - 1));
                         }
                         if (leftLinearWithoutFirst != null) {
                             Utils.setViewWeight(leftLinearWithoutFirst, leftViews.length - 1);
-                            log("set weight leftLinearWithoutFirst to " + (leftViews.length - 1));
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             rippleAlreadyCancelled = false;
@@ -523,25 +516,17 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                         }
                     }
 
-                    log("movementStarted=" + movementStarted + " isPressed()=" + isPressed() + " isExpanding()=" + isExpanding() + " longClickPerformed=" + longClickPerformed);
-
                     if (!movementStarted && !isPressed() && !isExpanding() && !longClickPerformed) {
 
-                        log("not pressed before");
-
                         if (!shouldPerformLongClick) {
-                            log("post long click runnable");
                             shouldPerformLongClick = true;
                             longClickHandler.postDelayed(longClickRunnable, ViewConfiguration.getLongPressTimeout());
                         }
                     }
 
-                    log("down return true");
-
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
-                    log("MOVE prevRawX=" + prevRawX + " lastTime=" + lastTime + " movementStarted=" + movementStarted);
                     if (Math.abs(prevRawX - event.getRawX()) < 20 && !movementStarted) {
                         return false;
                     }
@@ -559,8 +544,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     collapseOthersIfNeeded();
 
                     clearAnimations();
-
-                    log("make swipes");
 
                     directionLeft = prevRawX - event.getRawX() > 0;
                     float delta = Math.abs(prevRawX - event.getRawX());
@@ -597,8 +580,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                             } else {
                                 if (getViewWeight(rightLinearWithoutLast) < rightIcons.length - 1F &&
                                         (expandAnim == null || expandAnim.hasEnded())) {
-
-                                    Log.d("WeightAnim", "onTouch - Expand");
 
                                     view.setPressed(false);
                                     rightLinearWithoutLast.clearAnimation();
@@ -690,20 +671,15 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     prevRawX = event.getRawX();
                     lastTime = System.currentTimeMillis();
 
-                    log("update last and return true after swipe move processing");
-
                     return true;
 
                 case MotionEvent.ACTION_UP:
-
-                    log("UP movementStarted=" + movementStarted);
 
                     if (movementStarted) {
                         finishMotion(event);
                         finishSwipeAnimated();
                     } else {
                         if (!longClickPerformed) {
-                            log("perform click");
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 view.drawableHotspotChanged(event.getX(), event.getY());
@@ -717,8 +693,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                     return false;
                 case MotionEvent.ACTION_CANCEL:
-
-                    log("CANCEL");
 
                     finishMotion(event);
                     if (movementStarted)
