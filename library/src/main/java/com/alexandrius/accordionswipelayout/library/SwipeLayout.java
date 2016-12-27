@@ -594,19 +594,30 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                         ViewCompat.setTranslationX(mainLayout, left);
 
-                        if (rightLinear != null && left <= 0) {
-                            rightLayoutWidth = (int) Math.abs(left);
-                            LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
-                            params.width = rightLayoutWidth;
-                            rightLinear.setLayoutParams(params);
-
+                        if (rightLinear != null) {
+                            if (left < 0) {
+                                rightLayoutWidth = (int) Math.abs(left);
+                                LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
+                                params.width = rightLayoutWidth;
+                                rightLinear.setLayoutParams(params);
+                            } else {
+                                LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
+                                params.width = 0;
+                                rightLinear.setLayoutParams(params);
+                            }
                         }
 
-                        if (leftLinear != null&& left > 0) {
-                            leftLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
-                            LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
-                            params.width = leftLayoutWidth;
-                            leftLinear.setLayoutParams(params);
+                        if (leftLinear != null) {
+                            if (left > 0) {
+                                leftLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
+                                LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
+                                params.width = leftLayoutWidth;
+                                leftLinear.setLayoutParams(params);
+                            } else {
+                                LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
+                                params.width = 0;
+                                leftLinear.setLayoutParams(params);
+                            }
                         }
 
                     } else {
@@ -650,18 +661,30 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                         ViewCompat.setTranslationX(mainLayout, right);
 
-                        if (leftLinear != null && right > 0) {
-                            leftLayoutWidth = (int) Math.abs(right);
-                            LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
-                            params.width = leftLayoutWidth;
-                            leftLinear.setLayoutParams(params);
+                        if (leftLinear != null) {
+                            if (right > 0) {
+                                leftLayoutWidth = (int) Math.abs(right);
+                                LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
+                                params.width = leftLayoutWidth;
+                                leftLinear.setLayoutParams(params);
+                            } else {
+                                LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
+                                params.width = 0;
+                                leftLinear.setLayoutParams(params);
+                            }
                         }
 
-                        if (rightLinear != null && right <= 0) {
-                            rightLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
-                            LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
-                            params.width = rightLayoutWidth;
-                            rightLinear.setLayoutParams(params);
+                        if (rightLinear != null) {
+                            if (right < 0) {
+                                rightLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
+                                LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
+                                params.width = rightLayoutWidth;
+                                rightLinear.setLayoutParams(params);
+                            } else {
+                                LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
+                                params.width = 0;
+                                rightLinear.setLayoutParams(params);
+                            }
                         }
                     }
 
