@@ -882,7 +882,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private void collapseItem(boolean animated) {
         if (leftLinear != null && leftLinear.getWidth() > 0) {
 
-            Utils.setViewWeight(leftLinearWithoutFirst, leftIcons.length - 1);
+            Utils.setViewWeight(leftLinearWithoutFirst, 0);
+            Utils.setViewWeight(leftLinear, 0);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, 0, mainLayout, true);
@@ -896,7 +897,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             }
         } else if (rightLinear != null && rightLinear.getWidth() > 0) {
 
-            Utils.setViewWeight(rightLinearWithoutLast, rightIcons.length - 1);
+            Utils.setViewWeight(rightLinearWithoutLast, 0);
+            Utils.setViewWeight(rightLinear, 0);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, 0, mainLayout, false);
