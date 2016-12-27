@@ -542,10 +542,20 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                         return false;
                     }
 
-                    if (Build.VERSION.SDK_INT >= 21 && !rippleAlreadyCancelled && view instanceof FrameLayout) {
-                        Drawable foreground = ((FrameLayout) view).getForeground();
-                        foreground.setVisible(false, false);
-                        rippleAlreadyCancelled = true;
+                    if (Build.VERSION.SDK_INT >= 21 && !rippleAlreadyCancelled) {
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            Drawable foreground = view.getForeground();
+                            if (foreground != null) {
+                                foreground.setVisible(false, false);
+                                rippleAlreadyCancelled = true;
+                            }
+                        } else if (view instanceof FrameLayout) {
+                            Drawable foreground = ((FrameLayout) view).getForeground();
+                            if (foreground != null) {
+                                foreground.setVisible(false, false);
+                                rippleAlreadyCancelled = true;
+                            }
+                        }
                     }
 
                     if (isPressed()) view.setPressed(false);
@@ -872,7 +882,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private void collapseItem(boolean animated) {
         if (leftLinear != null && leftLinear.getWidth() > 0) {
 
-//            Utils.setViewWidth(leftLinearWithoutFirst, leftViews.length - 1);
+            Utils.setViewWidth(leftLinearWithoutFirst, 0);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, 0, mainLayout, true);
@@ -884,7 +894,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 leftLinear.setLayoutParams(params);
             }
         } else if (rightLinear != null && rightLinear.getWidth() > 0) {
-//            Utils.setViewWidth(rightLinearWithoutLast, rightViews.length - 1);
+            Utils.setViewWidth(rightLinearWithoutLast, 0);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, 0, mainLayout, false);
