@@ -503,17 +503,17 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     downRawX = prevRawX = event.getRawX();
 
                     if (ViewCompat.getTranslationX(mainLayout) == 0) {
-                        if (rightLinearWithoutLast != null) {
-                            Utils.setViewWeight(rightLinearWithoutLast, rightViews.length - 1);
-                        }
-                        if (leftLinearWithoutFirst != null) {
-                            Utils.setViewWeight(leftLinearWithoutFirst, leftViews.length - 1);
-                        }
+//                        if (rightLinearWithoutLast != null) {
+//                            Utils.setViewWeight(rightLinearWithoutLast, rightViews.length - 1);
+//                        }
+//                        if (leftLinearWithoutFirst != null) {
+//                            Utils.setViewWeight(leftLinearWithoutFirst, leftViews.length - 1);
+//                        }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             rippleAlreadyCancelled = false;
                             view.drawableHotspotChanged(downX, downY);
-                            view.setPressed(true);
                         }
+                        view.setPressed(true);
                     }
 
                     if (!movementStarted && !isPressed() && !isExpanding() && !longClickPerformed) {
@@ -594,7 +594,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                         ViewCompat.setTranslationX(mainLayout, left);
 
-                        if (rightLinear != null) {
+                        if (rightLinear != null && left <= 0) {
                             rightLayoutWidth = (int) Math.abs(left);
                             LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
                             params.width = rightLayoutWidth;
@@ -602,7 +602,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                         }
 
-                        if (leftLinear != null && left > 0) {
+                        if (leftLinear != null&& left > 0) {
                             leftLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
                             LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
                             params.width = leftLayoutWidth;
@@ -657,7 +657,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                             leftLinear.setLayoutParams(params);
                         }
 
-                        if (rightLinear != null) {
+                        if (rightLinear != null && right <= 0) {
                             rightLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
                             LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
                             params.width = rightLayoutWidth;
@@ -838,7 +838,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private void collapseItem(boolean animated) {
         if (leftLinear != null && leftLinear.getWidth() > 0) {
 
-            Utils.setViewWidth(leftLinearWithoutFirst, leftViews.length - 1);
+//            Utils.setViewWidth(leftLinearWithoutFirst, leftViews.length - 1);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, 0, mainLayout, true);
@@ -850,7 +850,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 leftLinear.setLayoutParams(params);
             }
         } else if (rightLinear != null && rightLinear.getWidth() > 0) {
-            Utils.setViewWidth(rightLinearWithoutLast, rightViews.length - 1);
+//            Utils.setViewWidth(rightLinearWithoutLast, rightViews.length - 1);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, 0, mainLayout, false);
@@ -988,18 +988,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         }
     }
 
-    public void collapseAll(boolean animated) {
-        ViewParent parent = getParent();
-        if (parent != null && parent instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) parent;
-            int count = recyclerView.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View item = recyclerView.getChildAt(i);
-                if (item instanceof SwipeLayout) {
-                    SwipeLayout swipeLayout = (SwipeLayout) item;
-                    if (ViewCompat.getTranslationX(swipeLayout.getSwipeableView()) != 0) {
-                        swipeLayout.setItemState(ITEM_STATE_COLLAPSED, animated);
-                    }
+    public static void collapseAll(RecyclerView recyclerView, boolean animated) {
+        int count = recyclerView.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View item = recyclerView.getChildAt(i);
+            if (item instanceof SwipeLayout) {
+                SwipeLayout swipeLayout = (SwipeLayout) item;
+                if (ViewCompat.getTranslationX(swipeLayout.getSwipeableView()) != 0) {
+                    swipeLayout.setItemState(ITEM_STATE_COLLAPSED, animated);
                 }
             }
         }
