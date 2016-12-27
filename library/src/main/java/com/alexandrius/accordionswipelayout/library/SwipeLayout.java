@@ -892,6 +892,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
                 params.width = 0;
                 leftLinear.setLayoutParams(params);
+                leftLinear.requestLayout();
             }
         } else if (rightLinear != null && rightLinear.getWidth() > 0) {
 
@@ -905,6 +906,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
                 params.width = 0;
                 rightLinear.setLayoutParams(params);
+                rightLinear.requestLayout();
             }
         }
     }
