@@ -514,12 +514,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     downRawX = prevRawX = event.getRawX();
 
                     if (ViewCompat.getTranslationX(mainLayout) == 0) {
-                        if (rightLinearWithoutLast != null) {
-                            Utils.setViewWeight(rightLinearWithoutLast, rightViews.length - 1);
-                        }
-                        if (leftLinearWithoutFirst != null) {
-                            Utils.setViewWeight(leftLinearWithoutFirst, leftViews.length - 1);
-                        }
+//                        if (rightLinearWithoutLast != null) {
+//                            Utils.setViewWeight(rightLinearWithoutLast, rightViews.length - 1);
+//                        }
+//                        if (leftLinearWithoutFirst != null) {
+//                            Utils.setViewWeight(leftLinearWithoutFirst, leftViews.length - 1);
+//                        }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             rippleAlreadyCancelled = false;
                             view.drawableHotspotChanged(downX, downY);
@@ -882,7 +882,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private void collapseItem(boolean animated) {
         if (leftLinear != null && leftLinear.getWidth() > 0) {
 
-            Utils.setViewWeight(leftLinearWithoutFirst, 0);
+//            Utils.setViewWeight(leftLinearWithoutFirst, 0);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, 0, mainLayout, true);
@@ -896,7 +896,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             }
         } else if (rightLinear != null && rightLinear.getWidth() > 0) {
 
-            Utils.setViewWeight(rightLinearWithoutLast, 0);
+//            Utils.setViewWeight(rightLinearWithoutLast, 0);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, 0, mainLayout, false);
