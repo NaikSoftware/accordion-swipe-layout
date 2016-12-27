@@ -104,6 +104,17 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         super.onAttachedToWindow();
         setAutoHideSwipe(autoHideSwipe);
         setOnlyOneSwipe(onlyOneSwipe);
+        ViewCompat.setTranslationX(mainLayout, 0);
+        if (leftLinear != null) {
+            ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
+            params.width = 0;
+            leftLinear.setLayoutParams(params);
+        }
+        if (rightLinear != null) {
+            ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
+            params.width = 0;
+            rightLinear.setLayoutParams(params);
+        }
     }
 
     @Override
