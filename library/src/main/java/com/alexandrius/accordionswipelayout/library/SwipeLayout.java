@@ -595,7 +595,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                                     if (expandAnim != null) expandAnim = null;
 
                                     collapseAnim = new WeightAnimation(0, rightLinearWithoutLast);
-                                    Log.d("WeightAnim", "onTouch - Collapse");
                                     startAnimation(collapseAnim);
                                 }
                             } else {
@@ -848,12 +847,16 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             invokedFromLeft = animateView == leftLinear;
 
             if (requiredWidth == getWidth()) {
-                if (getViewWeight(layoutWithout) == 0 && getWidth() != Math.abs(ViewCompat.getTranslationX(mainLayout)))
+
+                if (getViewWeight(layoutWithout) == 0 && getWidth() != Math.abs(ViewCompat.getTranslationX(mainLayout))) {
                     swipeAnim.setAnimationListener(collapseListener);
-                else if (collapseAnim != null && !collapseAnim.hasEnded()) {
+
+                } else if (collapseAnim != null && !collapseAnim.hasEnded()) {
                     collapseAnim.setAnimationListener(collapseListener);
+
                 } else if (getViewWeight(layoutWithout) == 0 || getWidth() == Math.abs(ViewCompat.getTranslationX(mainLayout))) {
                     clickBySwipe();
+
                 } else {
                     layoutWithout.clearAnimation();
                     if (collapseAnim != null) collapseAnim.cancel();
@@ -880,14 +883,16 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     private void collapseItem(boolean animated) {
+
         if (leftLinear != null && leftLinear.getWidth() > 0) {
 
-//            Utils.setViewWeight(leftLinearWithoutFirst, 0);
+            Utils.setViewWeight(leftLinearWithoutFirst, leftIcons.length - 1);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, 0, mainLayout, true);
                 leftLinear.startAnimation(swipeAnim);
             } else {
+                clearAnimations();
                 ViewCompat.setTranslationX(mainLayout, 0);
                 ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
                 params.width = 0;
@@ -896,12 +901,13 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             }
         } else if (rightLinear != null && rightLinear.getWidth() > 0) {
 
-//            Utils.setViewWeight(rightLinearWithoutLast, 0);
+            Utils.setViewWeight(rightLinearWithoutLast, rightIcons.length - 1);
 
             if (animated) {
                 SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, 0, mainLayout, false);
                 rightLinear.startAnimation(swipeAnim);
             } else {
+                clearAnimations();
                 ViewCompat.setTranslationX(mainLayout, 0);
                 ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
                 params.width = 0;

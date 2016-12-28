@@ -80,6 +80,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     if (pos != RecyclerView.NO_POSITION){
                         strings.remove(pos);
                         notifyItemRemoved(pos);
+                        SwipeLayout.collapseAll((RecyclerView) itemView.getParent(), false);
                     }
                     Toast.makeText(itemView.getContext(), "Trash", Toast.LENGTH_SHORT).show();
                 }
