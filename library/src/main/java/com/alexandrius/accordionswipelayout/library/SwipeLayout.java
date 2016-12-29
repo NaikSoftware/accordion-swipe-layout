@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import static android.R.id.background;
+import static android.R.id.undo;
 import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
 
 
@@ -577,14 +578,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                         float left = ViewCompat.getTranslationX(mainLayout) - delta;
 
                         if (left < -rightLayoutMaxWidth) {
-                            if (!canFullSwipeFromRight) {
+                            if (!canFullSwipeFromRight || rightIcons == null) {
                                 left = -rightLayoutMaxWidth;
                             } else if (left < -getWidth()) {
                                 left = -getWidth();
                             }
                         }
 
-                        if (canFullSwipeFromRight) {
+                        if (canFullSwipeFromRight && rightIcons != null) {
                             if (ViewCompat.getTranslationX(mainLayout) <= -(getWidth() - fullSwipeEdgePadding)) {
                                 if (getViewWeight(rightLinearWithoutLast) > 0 &&
                                         (collapseAnim == null || collapseAnim.hasEnded())) {
@@ -644,14 +645,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                         float right = ViewCompat.getTranslationX(mainLayout) + delta;
 
                         if (right > leftLayoutMaxWidth) {
-                            if (!canFullSwipeFromLeft) {
+                            if (!canFullSwipeFromLeft || leftIcons == null) {
                                 right = leftLayoutMaxWidth;
                             } else if (right >= getWidth()) {
                                 right = getWidth();
                             }
                         }
 
-                        if (canFullSwipeFromLeft) {
+                        if (canFullSwipeFromLeft && leftIcons != null) {
                             if (ViewCompat.getTranslationX(mainLayout) >= getWidth() - fullSwipeEdgePadding) {
                                 if (getViewWeight(leftLinearWithoutFirst) > 0 &&
                                         (collapseAnim == null || collapseAnim.hasEnded())) {
