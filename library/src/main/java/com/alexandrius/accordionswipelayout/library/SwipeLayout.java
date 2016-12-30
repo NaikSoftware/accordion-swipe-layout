@@ -161,6 +161,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     public void invalidateSwipeItems() {
+        clearAnimations();
+        if (mainLayout != null) ViewCompat.setTranslationX(mainLayout, 0);
         createItemLayouts();
     }
 
