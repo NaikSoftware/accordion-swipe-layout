@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -29,8 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import static android.R.id.background;
-import static android.R.id.undo;
 import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
 
 
@@ -380,6 +377,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setLeftIcons(int[] leftIcons) {
         this.leftIcons = leftIcons;
+        resetTouchListener();
     }
 
     public void setLeftIconColors(int[] leftIconColors) {
@@ -392,6 +390,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setRightIcons(int[] rightIcons) {
         this.rightIcons = rightIcons;
+        resetTouchListener();
     }
 
     public void setRightIconColors(int[] rightIconColors) {
@@ -408,10 +407,20 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setLeftTexts(String[] leftTexts) {
         this.leftTexts = leftTexts;
+        resetTouchListener();
     }
 
     public void setRightTexts(String[] rightTexts) {
         this.rightTexts = rightTexts;
+        resetTouchListener();
+    }
+
+    private void resetTouchListener() {
+        if ((leftIcons == null || leftIcons.length == 0) && (rightIcons == null || rightIcons.length == 0)) {
+            setOnTouchListener(null);
+        } else {
+            setOnTouchListener(this);
+        }
     }
 
     private int[] fillDrawables(TypedArray ta) {
