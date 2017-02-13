@@ -145,7 +145,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
             createItemLayouts();
             mainLayout.bringToFront();
-            resetTouchListener();
+            mainLayout.setOnTouchListener(this);
         }
     }
 
@@ -227,6 +227,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     @Override
     public void setOnClickListener(OnClickListener l) {
         mainLayout.setOnClickListener(l);
+    }
+
+    public void setOnLongClickListener(OnLongClickListener l) {
+        mainLayout.setOnLongClickListener(l);
     }
 
     private Drawable getRippleDrawable() {
@@ -377,7 +381,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setLeftIcons(int[] leftIcons) {
         this.leftIcons = leftIcons;
-        resetTouchListener();
     }
 
     public void setLeftIconColors(int[] leftIconColors) {
@@ -390,7 +393,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setRightIcons(int[] rightIcons) {
         this.rightIcons = rightIcons;
-        resetTouchListener();
     }
 
     public void setRightIconColors(int[] rightIconColors) {
@@ -407,20 +409,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setLeftTexts(String[] leftTexts) {
         this.leftTexts = leftTexts;
-        resetTouchListener();
     }
 
     public void setRightTexts(String[] rightTexts) {
         this.rightTexts = rightTexts;
-        resetTouchListener();
-    }
-
-    private void resetTouchListener() {
-        if ((leftIcons == null || leftIcons.length == 0) && (rightIcons == null || rightIcons.length == 0)) {
-            mainLayout.setOnTouchListener(null);
-        } else {
-            mainLayout.setOnTouchListener(this);
-        }
     }
 
     private int[] fillDrawables(TypedArray ta) {
@@ -468,7 +460,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         @Override
         public void run() {
             if (shouldPerformLongClick) {
-                if (performLongClick()) {
+                if (mainLayout.performLongClick()) {
                     longClickPerformed = true;
                     setPressed(false);
                 }
@@ -516,7 +508,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-        if (swipeEnabled && (leftIcons != null || rightIcons != null)) {
+       if (swipeEnabled && (leftIcons != null || rightIcons != null)) {
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
