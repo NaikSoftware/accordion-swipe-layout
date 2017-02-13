@@ -145,7 +145,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
             createItemLayouts();
             mainLayout.bringToFront();
-            mainLayout.setOnTouchListener(this);
+            resetTouchListener();
         }
     }
 
@@ -417,9 +417,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     private void resetTouchListener() {
         if ((leftIcons == null || leftIcons.length == 0) && (rightIcons == null || rightIcons.length == 0)) {
-            setOnTouchListener(null);
+            mainLayout.setOnTouchListener(null);
         } else {
-            setOnTouchListener(this);
+            mainLayout.setOnTouchListener(this);
         }
     }
 
