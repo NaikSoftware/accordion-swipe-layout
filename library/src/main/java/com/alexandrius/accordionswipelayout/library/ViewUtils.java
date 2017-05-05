@@ -9,8 +9,8 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 public class ViewUtils {
 
     public static Drawable setTint(Drawable drawable, int color) {
-        drawable = DrawableCompat.wrap(drawable);
+        drawable = DrawableCompat.wrap(drawable.mutate());
         DrawableCompat.setTint(drawable, color);
-        return drawable.mutate();
+        return drawable;
     }
 }
