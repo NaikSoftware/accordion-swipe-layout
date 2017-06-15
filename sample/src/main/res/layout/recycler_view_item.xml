@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.alexandrius.accordionswipelayout.library.SwipeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,8 +10,8 @@
     app:iconSize="@dimen/icon_size"
     app:leftItemColors="@array/leftColors"
     app:leftItemIcons="@array/leftDrawables"
-    app:rightItemColors="@array/rightColors"
     app:rightIconColors="@array/rightDrawableColors"
+    app:rightItemColors="@array/rightColors"
     app:rightItemIcons="@array/rightDrawables"
     app:rightStrings="@array/rightTexts"
     app:rightTextColors="@array/rightTextColors"

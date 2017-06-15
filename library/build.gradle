@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 16
-        versionName "0.5.13"
+        versionName "0.5.14"
 
     }
     buildTypes {
@@ -24,6 +24,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-compat:25.1.0'
+    compile 'de.halfbit:tinybus:3.0.2'
     provided 'com.android.support:recyclerview-v7:25.1.0'
 }
 

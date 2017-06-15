@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepclassmembers, allowobfuscation class ** {
+    @de.halfbit.tinybus.Subscribe public *;
+    @de.halfbit.tinybus.Produce public *;
+}

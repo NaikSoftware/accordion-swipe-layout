@@ -29,6 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import de.halfbit.tinybus.Subscribe;
+import de.halfbit.tinybus.TinyBus;
+
 import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
 
 
@@ -78,6 +81,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private static final long ANIMATION_MIN_DURATION = 100;
     private static final long ANIMATION_MAX_DURATION = 300;
     private RecyclerView.OnScrollListener onScrollListener;
+    private RecyclerView recyclerView;
+    private CollapseOtherElementsEvent collapseOtherElementsEvent;
+
+    private static TinyBus BUS;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -101,6 +108,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (BUS == null) BUS = TinyBus.from(getContext().getApplicationContext());
+        Log.d(TAG, "Register " + this);
+        BUS.register(this);
+        if (recyclerView == null) recyclerView = findRecyclerView();
         setAutoHideSwipe(autoHideSwipe);
         setOnlyOneSwipe(onlyOneSwipe);
         ViewCompat.setTranslationX(mainLayout, 0);
@@ -119,6 +130,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     @Override
     protected void onDetachedFromWindow() {
         setItemState(ITEM_STATE_COLLAPSED, false);
+        Log.d(TAG, "Unregister " + this);
+        BUS.unregister(this);
         super.onDetachedFromWindow();
     }
 
@@ -567,7 +580,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                     shouldPerformLongClick = false;
                     movementStarted = true;
-                    collapseOthersIfNeeded();
+                    if (collapseOtherElementsEvent != null) {
+                        Log.d(TAG, "Post " + collapseOtherElementsEvent);
+                        BUS.post(collapseOtherElementsEvent);
+                    }
 
                     clearAnimations();
 
@@ -752,20 +768,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         return false;
     }
 
-    private void collapseOthersIfNeeded() {
-        if (!onlyOneSwipe) return;
-        RecyclerView recyclerView = findRecyclerView();
-        if (recyclerView != null) {
-            int count = recyclerView.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View item = recyclerView.getChildAt(i);
-                if (item != this && item instanceof SwipeLayout) {
-                    SwipeLayout swipeLayout = (SwipeLayout) item;
-                    if (ViewCompat.getTranslationX(swipeLayout.getSwipeableView()) != 0 && !swipeLayout.inAnimatedState()) {
-                        swipeLayout.setItemState(ITEM_STATE_COLLAPSED, true);
-                    }
-                }
-            }
+    @Subscribe
+    public void onCollapse(CollapseOtherElementsEvent event) {
+        Log.d(TAG, "onCollapse " + event);
+        if (event.currentSwipeLayout != this && recyclerView == event.recyclerView
+                && ViewCompat.getTranslationX(getSwipeableView()) != 0 && !inAnimatedState()) {
+            setItemState(ITEM_STATE_COLLAPSED, true);
         }
     }
 
@@ -972,10 +980,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setAutoHideSwipe(boolean autoHideSwipe) {
         this.autoHideSwipe = autoHideSwipe;
-        RecyclerView recyclerView = findRecyclerView();
         if (recyclerView != null) {
             if (onScrollListener != null) recyclerView.removeOnScrollListener(onScrollListener);
-            if (autoHideSwipe)
+            if (autoHideSwipe) {
                 recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
                     @Override
                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -985,6 +992,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                         }
                     }
                 });
+            }
         } else {
             Log.e(TAG, "For autoHideSwipe parent must be a RecyclerView");
         }
@@ -1001,6 +1009,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setOnlyOneSwipe(boolean onlyOneSwipe) {
         this.onlyOneSwipe = onlyOneSwipe;
+        if (onlyOneSwipe) collapseOtherElementsEvent = new CollapseOtherElementsEvent(recyclerView, this);
+        else collapseOtherElementsEvent = null;
     }
 
     public boolean isLeftExpanding() {

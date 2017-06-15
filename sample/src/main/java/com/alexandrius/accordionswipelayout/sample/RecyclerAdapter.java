@@ -28,13 +28,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+//        v.findViewById(R.id.swipe_layout).setTag(parent);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.textView.setText("Item # " + strings.get(position));
-        ((SwipeLayout) holder.itemView).setItemState(SwipeLayout.ITEM_STATE_COLLAPSED, false);
     }
 
     @Override
@@ -49,9 +49,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public ViewHolder(final View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.recycler_item_tv);
+//            SwipeLayout swipeLayout = (SwipeLayout) ((ViewGroup) itemView).getChildAt(0);
+//            swipeLayout.setOnLongClickListener(this);
+//            swipeLayout.setOnClickListener(this);
+//            swipeLayout.setOnSwipeItemClickListener(this);
+
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-
             ((SwipeLayout) itemView).setOnSwipeItemClickListener(this);
         }
 
