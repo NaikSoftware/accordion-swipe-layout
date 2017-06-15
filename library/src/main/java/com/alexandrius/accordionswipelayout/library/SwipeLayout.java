@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -753,9 +754,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     private void collapseOthersIfNeeded() {
         if (!onlyOneSwipe) return;
-        ViewParent parent = getParent();
-        if (parent != null && parent instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) parent;
+        RecyclerView recyclerView = findRecyclerView();
+        if (recyclerView != null) {
             int count = recyclerView.getChildCount();
             for (int i = 0; i < count; i++) {
                 View item = recyclerView.getChildAt(i);
@@ -972,9 +972,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setAutoHideSwipe(boolean autoHideSwipe) {
         this.autoHideSwipe = autoHideSwipe;
-        ViewParent parent = getParent();
-        if (parent != null && parent instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) parent;
+        RecyclerView recyclerView = findRecyclerView();
+        if (recyclerView != null) {
             if (onScrollListener != null) recyclerView.removeOnScrollListener(onScrollListener);
             if (autoHideSwipe)
                 recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
@@ -989,6 +988,15 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         } else {
             Log.e(TAG, "For autoHideSwipe parent must be a RecyclerView");
         }
+    }
+
+    @Nullable
+    private RecyclerView findRecyclerView() {
+        ViewParent parent = getParent();
+        if (parent != null && parent instanceof RecyclerView) return (RecyclerView) parent;
+        Object tag = getTag();
+        if (tag != null && tag instanceof RecyclerView) return (RecyclerView) tag;
+        return null;
     }
 
     public void setOnlyOneSwipe(boolean onlyOneSwipe) {
