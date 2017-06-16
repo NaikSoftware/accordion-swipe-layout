@@ -109,7 +109,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (BUS == null) BUS = TinyBus.from(getContext().getApplicationContext());
-        Log.d(TAG, "Register " + this);
+//        Log.d(TAG, "Register " + this);
         BUS.register(this);
         if (recyclerView == null) recyclerView = findRecyclerView();
         setAutoHideSwipe(autoHideSwipe);
@@ -130,7 +130,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     @Override
     protected void onDetachedFromWindow() {
         setItemState(ITEM_STATE_COLLAPSED, false);
-        Log.d(TAG, "Unregister " + this);
+//        Log.d(TAG, "Unregister " + this);
         BUS.unregister(this);
         super.onDetachedFromWindow();
     }
@@ -581,7 +581,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     shouldPerformLongClick = false;
                     movementStarted = true;
                     if (collapseOtherElementsEvent != null) {
-                        Log.d(TAG, "Post " + collapseOtherElementsEvent);
+//                        Log.d(TAG, "Post " + collapseOtherElementsEvent);
                         BUS.post(collapseOtherElementsEvent);
                     }
 
@@ -770,7 +770,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     @Subscribe
     public void onCollapse(CollapseOtherElementsEvent event) {
-        Log.d(TAG, "onCollapse " + event);
+//        Log.d(TAG, "onCollapse " + event);
         if (event.currentSwipeLayout != this && recyclerView == event.recyclerView
                 && ViewCompat.getTranslationX(getSwipeableView()) != 0 && !inAnimatedState()) {
             setItemState(ITEM_STATE_COLLAPSED, true);

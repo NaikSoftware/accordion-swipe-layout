@@ -14,9 +14,4 @@ public class CollapseOtherElementsEvent {
         this.recyclerView = recyclerView;
         this.currentSwipeLayout = currentSwipeLayout;
     }
-
-    @Override
-    public String toString() {
-        return "Event from " + currentSwipeLayout.toString();
-    }
 }
