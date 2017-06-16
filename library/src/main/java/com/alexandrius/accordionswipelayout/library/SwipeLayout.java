@@ -781,7 +781,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     public void onCollapse(CollapseAllElementsEvent event) {
         if (recyclerView == event.recyclerView
                 && ViewCompat.getTranslationX(getSwipeableView()) != 0 && !inAnimatedState()) {
-            setItemState(ITEM_STATE_COLLAPSED, true);
+            setItemState(ITEM_STATE_COLLAPSED, event.animate);
         }
     }
 
