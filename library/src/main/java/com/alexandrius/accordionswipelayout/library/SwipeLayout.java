@@ -785,6 +785,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         }
     }
 
+    public static void collapseAll(RecyclerView recyclerView, boolean animate) {
+        TinyBus.from(recyclerView.getContext().getApplicationContext()).post(
+                new CollapseAllElementsEvent(recyclerView, animate));
+    }
+
     public View getSwipeableView() {
         return mainLayout;
     }
@@ -1066,19 +1071,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                             onSwipeItemClickListener.onSwipeItemClick(false, i);
                         break;
                     }
-                }
-            }
-        }
-    }
-
-    public static void collapseAll(RecyclerView recyclerView, boolean animated) {
-        int count = recyclerView.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View item = recyclerView.getChildAt(i);
-            if (item instanceof SwipeLayout) {
-                SwipeLayout swipeLayout = (SwipeLayout) item;
-                if (ViewCompat.getTranslationX(swipeLayout.getSwipeableView()) != 0) {
-                    swipeLayout.setItemState(ITEM_STATE_COLLAPSED, animated);
                 }
             }
         }
