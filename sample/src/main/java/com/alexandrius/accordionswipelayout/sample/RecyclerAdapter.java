@@ -1,6 +1,7 @@
 package com.alexandrius.accordionswipelayout.sample;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alexandrius.accordionswipelayout.library.SwipeLayout;
+import com.alexandrius.accordionswipelayout.library.SwipeLayout.OnSwipeExpandListener;
 
 import java.util.ArrayList;
 
@@ -42,7 +44,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return strings.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, SwipeLayout.OnSwipeItemClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener,
+            SwipeLayout.OnSwipeItemClickListener, SwipeLayout.OnSwipeExpandListener {
 
         TextView textView;
 
@@ -56,7 +59,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-            ((SwipeLayout) itemView).setOnSwipeItemClickListener(this);
+            SwipeLayout swipeLayout = (SwipeLayout) itemView;
+            swipeLayout.setOnSwipeItemClickListener(this);
+            swipeLayout.setOnExpandSwipeListener(this);
         }
 
         @Override
@@ -89,6 +94,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     Toast.makeText(itemView.getContext(), "Trash", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+
+        @Override
+        public void onSwipeExpanded(boolean left) {
+            Toast.makeText(itemView.getContext(), "Expanded left=" + left, Toast.LENGTH_SHORT).show();
+            Log.d("ViewHolder", "Expanded left=" + left);
         }
     }
 }

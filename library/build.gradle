@@ -4,13 +4,13 @@ group='com.github.alexandrius'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 16
-        versionName "0.5.18"
+        versionName "0.5.19"
 
     }
     buildTypes {

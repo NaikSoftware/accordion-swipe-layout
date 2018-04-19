@@ -901,7 +901,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             }
 
             animateView.startAnimation(swipeAnim);
-            if (swipeExpandListener != null) {
+            if (swipeExpandListener != null && left != directionLeft) {
                 swipeExpandListener.onSwipeExpanded(left);
             }
         }
