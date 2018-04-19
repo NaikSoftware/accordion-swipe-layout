@@ -83,6 +83,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private RecyclerView.OnScrollListener onScrollListener;
     private RecyclerView recyclerView;
     private CollapseOtherElementsEvent collapseOtherElementsEvent;
+    private OnSwipeExpandListener swipeExpandListener;
 
     private static TinyBus BUS;
 
@@ -92,6 +93,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public void setOnSwipeItemClickListener(OnSwipeItemClickListener onSwipeItemClickListener) {
         this.onSwipeItemClickListener = onSwipeItemClickListener;
+    }
+
+    public void setOnExpandSwipeListener(OnSwipeExpandListener listener) {
+        this.swipeExpandListener = listener;
     }
 
     public SwipeLayout(Context context, AttributeSet attrs) {
@@ -896,6 +901,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             }
 
             animateView.startAnimation(swipeAnim);
+            if (swipeExpandListener != null) {
+                swipeExpandListener.onSwipeExpanded(left);
+            }
         }
     }
 
@@ -1078,5 +1086,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     public interface OnSwipeItemClickListener {
         void onSwipeItemClick(boolean left, int index);
+    }
+
+    public interface OnSwipeExpandListener {
+        void onSwipeExpanded(boolean left);
     }
 }
